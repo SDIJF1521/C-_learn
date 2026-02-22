@@ -1,0 +1,57 @@
+Cpp_sample_code/.vscode/*
+cpp_sample_code/*.exe
+# VS Code 配置
+.vscode/
+*.vscode/
+# C++ 编译输出
+*.exe
+*.out
+*.app
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+*.dylib
+# 调试文件
+*.dSYM/
+*.pdb
+*.ilk
+*.exp
+*.lib
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cmake
+# 构建目录
+build/
+out/
+bin/
+lib/
+Debug/
+Release/
+# IDE 特定文件
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.sln
+*.vcxproj*
+*.filters
+*.suo
+*.userprefs
+# 临时文件
+*.tmp
+*.temp
+*.log
+*.swp
+*~
+# 操作系统
+.DS_Store
+Thumbs.db
+# 备份文件
+*.bak
+*.backup
