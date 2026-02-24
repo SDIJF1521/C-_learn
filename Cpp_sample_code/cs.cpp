@@ -1,16 +1,11 @@
 #include <iostream>
-
-enum test {
-    a,
-    b = 200,
-    c = 300,
-    d
-};
-
-int main(){
-    test cs[] = {a, b, c, d};
-    std::cout << cs[0] << std::endl;
-    std::cout << cs[1] << std::endl;
-    std::cout << cs[2] << std::endl;
-    std::cout << cs[3] << std::endl;
+int main(int argc, char const *argv[])
+{
+    double a = 1.0;
+    int b = 2;
+    std::cout <<&a << std::endl;
+    std::cout << &b << std::endl;
+    /* code */
+    return 0;
 }
+
