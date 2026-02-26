@@ -3816,4 +3816,147 @@
           }
         ```
   - 野指针问题其实就是指针乱指，指向了不该指的内存地址，导致程序崩溃或其他未定义的行为。
-- xian'mia
+  #### 使用 `new` 创建动态数组
+  - 动态数组是指在运行时根据需要分配内存的数组，使用 `new` 运算符可以创建动态数组，即需要的数组大小在运行时确定。
+  - 使用 `new` 运算符可以创建动态数组，语法如下：
+
+    - ```cpp
+        数据类型 *指针变量 = new 数据类型[数组大小];
+      ```
+  - 动态数组是在程序运行时分配内存而普通数组是在编译时分配内存，动态数组的大小可以在运行时确定，而普通数组的大小必须在编译时确定。
+  - 普通数组的大小必须是一个常量表达式，而动态数组的大小可以是一个变量或一个表达式。
+  - 使用 `new` 创建动态数组时需要注意以下几点：
+    - 释放动态数组时必须使用 `delete[]` 运算符，而不是 `delete` 运算符。
+    - 动态数组的索引从 0 开始，到数组大小减 1 结束。
+    - 动态数组的内存分配和释放必须成对出现，否则会导致内存泄漏或悬空指针错误。
+- 示例:
+  - ```cpp
+      // use_new_array.cpp
+      #include <iostream>
+      #include <string>
+      #include <cstring>
+
+      int main() {
+          using namespace std;
+          string str1 = "hello";
+          string str2 = "world";
+          char* newStr = new char[str1.length() + str2.length() + 2];
+          strcpy(newStr, str1.c_str());   // 将 str1 的内容复制到 newStr 中
+          newStr[str1.length()] = ' ';  // 在 str1 和 str2 之间添加一个空格
+          newStr[str1.length() + 1] = '\0';  // 在 newStr 的末尾添加一个空字符
+          strcat(newStr, str2.c_str());  // 将 str2 的内容追加到 newStr 中
+          cout << newStr << endl;
+          delete[] newStr;
+          newStr = nullptr;
+      }
+      ```
+      - 运行成功输出结果为:
+        - ```
+          hello world
+          ```
+#### 指针、数组和指针算术
+- 指针和数组基本上是等价的,其原因在与指针运算符和C++内部处理数组的方式。
+- 数组在计算机中内存布局是连续的，数组名表示数组的首地址，那么假设数组的首地址(即[0])为 `0x1000`,那么数组的第1个元素地址为 `0x0000` + 该数组的数据连续类型的字节数，数组的第2个元素地址为 `0x0000` + 2 * 该数组的数据连续类型的字节数，以此类推。
+- 示例
+  - ```cpp
+      // arr_ptr.cpp
+      #include <iostream>
+      #include <windows.h>
+          
+      int main(){
+          using namespace std;
+          SetConsoleOutputCP(CP_UTF8);
+          int arr[5] = {1,2,3,4,5};
+          cout << "数组首地址: " << arr << endl; // 输出数组首地址
+          cout << "数组第一个元素地址: " << &arr[0] << endl; // 输出数组第一个元素地址
+          cout << "数组第二个元素地址: " << &arr[1] << endl;
+          cout << "数组第三个元素地址: " << &arr[2] << endl;
+          cout << "数组第四个元素地址: " << &arr[3] << endl;
+          cout << "数组第五个元素地址: " << &arr[4] << endl;
+          cout << "类型大小: " << sizeof(int) << " 字节" << endl; // 输出 int 类型的字节数
+      }
+      ```
+      - 运行成功输出结果为:
+        - ```
+            数组首地址: 0x5ffe60
+            数组第一个元素地址: 0x5ffe60
+            数组第二个元素地址: 0x5ffe64
+            数组第三个元素地址: 0x5ffe68
+            数组第四个元素地址: 0x5ffe6c
+            数组第五个元素地址: 0x5ffe70
+            类型大小: 4 字节
+            ```
+- 从上面的示例中可以看出这个之前所说的,若将首元素的地地址赋给一个指针变量,那么这个指针变量就可以通过指针算术来访问数组中的其他元素。
+- 示例:
+  - ```cpp
+      // arr_ptr1.cpp
+      #include <iostream>
+      #include <windows.h>
+
+      int main(){
+          using namespace std;
+          SetConsoleOutputCP(CP_UTF8);
+          int arr[5] = {1,2,3,4,5};
+          int *p = &arr[0];
+          cout << "指针 p 的值: " << p << endl; // 输出指针 p 的值，即数组首地址
+          cout << "指针 p 指向的值: " << *p << endl;
+          p++; // 将指针 p 移动到下一个元素
+          cout << "指针 p 的值: " << p << endl; // 输出指针 p 的值，即数组第二个元素的地址
+          cout << "指针 p 指向的值: " << *p << endl;
+          p++; // 将指针 p 移动到下一个元素
+          cout << "指针 p 的值: " << p << endl; // 输出指
+          cout << "指针 p 指向的值: " << *p << endl;
+          p++; // 将指针 p 移动到下一个元素
+          cout << "指针 p 的值: " << p << endl; // 输出指针 p 的值，即数组第三个元素的地址
+          cout << "指针 p 指向的值: " << *p << endl;
+          p++; // 将指针 p 移动到下一个元素
+          cout << "指针 p 的值: " << p << endl; // 输出指针 p 的值，即数组第四个元素的地址
+          cout << "指针 p 指向的值: " << *p << endl;
+      }
+      ```
+      - 运行成功输出结果为:
+        - ```
+            指针 p 的值: 0x5ffe60
+            指针 p 指向的值: 1
+            指针 p 的值: 0x5ffe64
+            指针 p 指向的值: 2
+            指针 p 的值: 0x5ffe68
+            指针 p 指向的值: 3
+            指针 p 的值: 0x5ffe6c
+            指针 p 指向的值: 4
+            ```
+        - 这里++的代表+1，而1为int类型就是加4个字节，即一个int类型的字节数
+        - 
+  - 若偏移指定数值地址的话需要使用`reinterpret_cast<uintptr_t>(p)`将地址选为整数类型计算在转换为指针类型。
+  - 示例:
+    - ```cpp
+        // arr_ptr2.cpp
+        #include <iostream>
+        #include <windows.h>
+        int main(){
+            using namespace std;
+            SetConsoleOutputCP(CP_UTF8);
+            int arr[5] = {1,2,3};
+            int *p = &arr[0];
+            int p_int = reinterpret_cast<uintptr_t>(p); // 将指针 p 转换为 uintptr_t 类型的整数
+            cout << "指针 p 的值: " << p << endl; // 输出指
+            cout << "指针 p 指向的值: " << *p << endl;
+            p_int+= sizeof(int); // 将整数 p_int 增加 2 个 int 类型的字节数
+            p = reinterpret_cast<int*>(p_int); // 将整数 p_int 转换回指针类型
+            cout << "偏移后指针 p 的值: " << p << endl; // 输出偏移后的指针值
+            cout << "偏移后指针 p 指向的值: " << *p << endl;
+            p_int+= sizeof(int); // 将整数 p_int 增加 2 个 int 类型的字节数
+            p = reinterpret_cast<int*>(p_int); // 将整数 p_int 转换回指
+            cout << "偏移后指针 p 的值: " << p << endl; // 输出偏移后的指针值
+            cout << "偏移后指针 p 指向的值: " << *p;
+        }
+        ```
+        - 运行成功输出结果为:
+          - ```
+              指针 p 的值: 0x5ffe60
+              指针 p 指向的值: 1
+              偏移后指针 p 的值: 0x5ffe64
+              偏移后指针 p 指向的值: 2
+              偏移后指针 p 的值: 0x5ffe68
+              偏移后指针 p 指向的值: 3
+              ```
