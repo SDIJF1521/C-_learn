@@ -5,7 +5,7 @@ int main(){
     SetConsoleOutputCP(CP_UTF8);
     int arr[5] = {1,2,3};
     int *p = &arr[0];
-    int p_int = reinterpret_cast<uintptr_t>(p); // 将指针 p 转换为 uintptr_t 类型的整数
+    uintptr_t p_int = reinterpret_cast<uintptr_t>(p); // 将指针 p 转换为 uintptr_t 类型的整数
     cout << "指针 p 的值: " << p << endl; // 输出指
     cout << "指针 p 指向的值: " << *p << endl;
     p_int+= sizeof(int); // 将整数 p_int 增加 2 个 int 类型的字节数
