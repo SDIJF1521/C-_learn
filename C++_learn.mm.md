@@ -4049,3 +4049,174 @@
           姓名: 张三
           年龄: 30
         ```
+##### 自动存储、静态存储、动态存储和线程存储
+- C++中的内存分为自动存储、静态存储、动态存储和线程存储四种类型。
+- 自动存储（Automatic Storage）
+  - 自动存储是默认的存储类型，用于局部变量和函数参数。当函数被调用时，这些变量被创建；当函数返回时，这些变量被销毁。自动存储的变量在栈上分配内存。
+- 静态存储（Static Storage）
+  - 静态存储用于全局变量和静态局部变量。这些变量在程序启动时被创建，在程序结束时被销毁。静态存储的变量在静态存储区分配内存。
+- 动态存储（Dynamic Storage）
+  - 动态存储用于通过 `new` 和 `delete` 运算符创建和销毁的对象。动态存储的变量在堆上分配内存。
+- 线程存储（Thread Storage）
+  - 在`C++ 11`中增加了线程存储,线程存储用于线程局部变量，每个线程都有自己的副本。线程局部变量在每个线程中独立存在，互不干扰。
+  - 线程局部变量可以使用 `thread_local` 关键字声明，如下所示：
+    - ```cpp
+        thread_local int threadVar = 0; // 声明一个线程局部变量
+      ```
+    - 每个线程都有自己的 `threadVar` 副本，修改一个线程中的 `threadVar` 不会影响其他线程中的 `threadVar`。
+  - 示例:
+    - ```cpp
+        // thread_local.cpp
+        #include <iostream>
+        #include <thread>   // 包含线程库头文件
+
+        thread_local int threadVar = 0; // 声明一个线程局部变量
+
+        void threadFunction(int id) {
+            threadVar = id; // 修改线程局部变量
+            std::cout << "Thread " << id << ": threadVar = " << threadVar << "\n";
+        }
+
+        int main() {
+            std::thread t1(threadFunction, 1);  // 创建线程 t1，传递参数 1
+            std::thread t2(threadFunction, 2);  // 创建线程 t2，传递参数 2
+
+            t1.join();
+            t2.join();
+
+            return 0;
+        }
+      ```
+      - 运行成功输出结果为:
+        - ```
+            Thread 1: threadVar = 1
+            Thread 2: threadVar = 2
+            ```
+
+- 栈、堆、静态存储区、全局存储区
+  - 栈（Stack）
+    - 栈是自动存储的内存区域，用于存储局部变量和函数参数。栈内存由编译器自动管理，分配和释放速度快，但大小有限常见的`x64`架构下栈大小约为`1MB`。
+  - 堆（Heap）
+    - 堆是动态存储的内存区域，用于存储通过 `new` 运算符创建的对象。堆内存由程序员手动管理，分配和释放速度较慢，但大小取决于系统的可用内存。
+  - 静态存储区（Static Storage Area）
+    - 静态存储区用于存储全局变量和静态局部变量。静态存储区的内存在程序启动时分配，在程序结束时释放。
+  - 全局存储区（Global Storage Area）
+    - 全局存储区用于存储全局变量。全局存储区的内存在程序启动时分配，在程序结束时释放。
+  - 栈、堆和内存泄漏
+    - ![](./C++img/qq_pic_merged_1772344895405.jpg)
+
+#### 类型组合
+- C++中的类型组合是指将不同类型的变量组合成一个新的类型，复合类型可以和作为其他类型的成员变量
+- 示例:
+  - ```cpp
+      // type_combination.cpp
+      #include <iostream>
+      #include <string>
+      #include <windows.h>
+
+      enum Gender {
+          MALE=0,
+          FEMALE=1
+      };
+
+      union Data {
+          int i;
+          double d;
+          char c;
+          Gender g;
+      };
+
+      struct Student {
+          std::string name;
+          int age;
+          Data data;
+          Data data1;
+      };
+
+      int main(){
+          using namespace std;
+          SetConsoleOutputCP(CP_UTF8);
+          Student *test = new Student;
+          test->name = "张三";
+          test->age = 30;
+          test->data.g = MALE;
+          test -> data1.d = 3.14;
+          cout << "姓名: " << test->name << endl; // 输出姓名
+          cout << "年龄: " << test->age << endl; // 输出年龄
+          cout << "性别: " << (test->data.g == MALE ? "男" : "女") << endl; // 输出性别
+          cout << "数据1: " << test->data1.d << endl; // 输出数据1
+          delete test; // 释放内存
+          test = nullptr; // 避免悬空指针错误
+      }
+      ```
+      - 运行成功输出结果为:
+        - ```
+            姓名: 张三
+            年龄: 30
+            性别: 男
+            数据1: 3.14
+          ```
+#### 数组的替代品
+- 数组的替代品有 `模板类(vector)` 和 `模板类(array)`
+
+#### 模板类(vector)
+- 模板类(vector)是一个动态数组，它可以自动调整大小，并且可以存储任意类型的元素。
+- 使用模板类(vector)需要包含 `<vector>` 头文件，如下所示：
+  - ```cpp
+      #include <vector>
+    ```
+- 通过 `vector` 类可以创建一个动态数组，如下所示：
+  - ```cpp
+      std::vector<数据类型> 变量名;
+    ```
+- `vector` 类的常用方法有：
+  - `push_back()`：在数组末尾添加一个元素。
+  - `pop_back()`：删除数组末尾的元素。
+  - `size()`：返回数组的大小（元素个数）。
+  - `empty()`：检查数组是否为空。
+  - `clear()`：清空数组中的所有元素。
+
+- 示例：
+  - ```cpp
+      // vector_example.cpp
+      #include <iostream>
+      #include <vector>
+      #include<windows.h>
+
+
+      int main() {
+          using namespace std;
+          SetConsoleOutputCP(CP_UTF8);
+          vector<int> vec; // 创建一个整数类型的动态数组
+          vec = {1, 2, 3, 4, 5}; // 初始化数组
+          cout << "检测数组是否为空: " << (vec.empty() ? "是" : "否") << endl; // 输出数组大小
+          vec.push_back(10); // 在数组末尾添加元素 10
+          vec.push_back(20); // 在数组末尾添加元素 20
+          vec.push_back(30); // 在数组末尾添加元素 30
+          cout << "数组大小: " << vec.size() << endl; // 输出数组大小
+          cout << "数组元素: ";
+          for (int i : vec) {
+              cout << i << " "; // 输出数组元素
+          }
+          cout << endl;
+          vec.pop_back(); // 删除数组末尾的元素
+          cout << "删除数组末尾的元素后数组大小: " << vec.size() << endl; // 输出数组大小
+          cout << "删除数组末尾的元素后数组元素: ";
+          for (int i : vec) {
+              cout << i << " "; // 输出数组元素
+          }
+          cout << endl;
+          vec.clear(); // 清空数组中的所有元素
+          cout << "清空数组中的所有元素后数组大小: " << vec.size() << endl; // 输出数组大小
+          
+      }
+      ```
+      - 运行成功输出结果为:
+        - ```
+            检测数组是否为空: 否
+            数组大小: 8
+            数组元素: 1 2 3 4 5 10 20 30 
+            删除数组末尾的元素后数组大小: 7
+            删除数组末尾的元素后数组元素: 1 2 3 4 5 10 20 
+            清空数组中的所有元素后数组大小: 0
+            ```
