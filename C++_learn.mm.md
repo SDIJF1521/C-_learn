@@ -4747,3 +4747,403 @@
 - 对于复杂类型，范围 for 循环使用引用可以避免不必要的拷贝
 - 在性能关键场景，考虑手动循环展开和向量化
 - 使用编译器优化选项（如 -O2, -O3）可以显著提升循环性能
+
+#### `while` 循环
+- 有些时候我们可能需要让循环在满足某个条件时才继续执行,这时候就可以使用 `while` 循环，`while`循环被成为 **条件循环**,条件满足时循环继续执行,否则循环结束
+- 语法:
+  - ```cpp
+      while (条件) {
+          // 循环体
+      }
+    ```
+- 示例:
+- ```cpp
+    // while_test.cpp
+    #include<iostream>
+    #include<string>
+    int main(){
+      using namespace std;
+      string password;
+      cout<<"请输入密码:";
+      cin>>password;
+      while(password!="123456"){
+        cout<<"密码错误,请重新输入:";
+        cin>>password;
+      }
+      cout<<"密码正确,登录成功!"<<endl;
+      return 0;
+    }
+    ``` 
+    - 运行结果:
+      - ```
+          请输入密码:123
+          密码错误,请重新输入:4321
+          密码错误,请重新输入:111
+          密码错误,请重新输入:123456
+          密码正确,登录成功!
+        ```
+    - 程序说明：
+      - 程序会不断提示用户输入密码,直到用户输入正确的密码(123456)为止
+      - 循环体中包含了密码验证的逻辑,如果用户输入的密码与预设密码不匹配,则提示错误并继续循环,直到匹配为止
+#### `do-while` 循环
+- `do-while` 循环与 `while` 循环类似,不同之处在于 `do-while` 循环会先执行一次循环体,然后检查条件是否满足,如果满足则继续执行,否则循环结束
+- 语法:
+  - ```cpp
+      do {
+          // 循环体
+      } while (条件);
+    ```
+- 特点:
+  - 循环体至少执行一次（先执行后判断）
+  - 条件为真时继续循环，为假时退出
+  - 语句末尾有分号
+- 适用场景:
+  - 需要至少执行一次的场景（如菜单选择、输入验证等）
+  - 循环条件依赖于循环体内部的操作结果
+- 示例1 - 计算阶乘:
+  - ```cpp
+      // do_while_factorial.cpp
+      #include<iostream>
+      #include<windows.h>
+      int main(){
+          SetConsoleOutputCP(CP_UTF8);
+          using namespace std;
+          int n = 5;
+          int result = 1;
+          int i = 1;
+          do{
+              result = result * i;
+              i++;
+          }while(i <= n);
+          cout << n << "的阶乘是:" << result << endl;
+          return 0;
+      }
+    ```
+    - 运行结果:
+      - ```
+          5的阶乘是:120
+        ```
+    - 程序说明:
+      - 先执行一次乘法操作，然后检查i是否小于等于n
+      - 确保至少计算一次阶乘
+- 示例2 - 菜单选择:
+  - ```cpp
+      // do_while_menu.cpp
+      #include<iostream>
+      #include<windows.h>
+      int main(){
+          SetConsoleOutputCP(CP_UTF8);
+          using namespace std;
+          int choice;
+          do{
+              cout << "===== 菜单 =====" << endl;
+              cout << "1. 选项一" << endl;
+              cout << "2. 选项二" << endl;
+              cout << "3. 退出" << endl;
+              cout << "请选择:";
+              cin >> choice;
+              
+              switch(choice){
+                  case 1:
+                      cout << "你选择了选项一" << endl;
+                      break;
+                  case 2:
+                      cout << "你选择了选项二" << endl;
+                      break;
+                  case 3:
+                      cout << "退出程序" << endl;
+                      break;
+                  default:
+                      cout << "无效选择，请重新输入" << endl;
+              }
+          }while(choice != 3);
+          
+          return 0;
+      }
+    ```
+    - 程序说明:
+      - 菜单至少显示一次，用户可以选择不同的选项
+      - 当用户选择3时退出循环
+- 注意事项:
+  - 不要忘记while后面的分号
+  - 确保循环条件最终会变为假，避免无限循环
+  - 与while循环的区别：do-while至少执行一次，while可能一次都不执行
+#### `continue` 语句
+- `continue` 语句用于跳过当前循环体中剩余的语句,直接进入下一次循环
+- 语法:
+  - ```cpp
+      continue;
+    ```
+- 特点:
+  - 只能用于循环语句中（for、while、do-while）
+  - 跳过continue之后的循环体语句，直接进入下一次循环条件判断
+  - 对于for循环，会先执行更新表达式，再判断循环条件
+  - 对于while/do-while循环，直接跳到条件判断
+- 适用场景:
+  - 跳过某些特定条件下的循环处理
+  - 过滤不需要处理的数据
+  - 提高循环效率，避免不必要的计算
+- 示例1 - 过滤偶数:
+  - ```cpp
+      // continue_test.cpp
+      #include<iostream>
+      int main(){
+          using namespace std;
+          for(int i=0;i<10;i++){
+              if(i%2==0){
+                  continue;  // 跳过偶数
+              }
+              cout<<i<<endl;
+          }
+          return 0;
+      }
+    ```
+    - 运行结果:
+      - ```
+          1
+          3
+          5
+          7
+          9
+        ```
+    - 程序说明:
+      - 程序会输出0到9之间的所有奇数,跳过所有偶数
+      - 当i为偶数时，执行continue跳过cout语句，直接进入下一次循环
+- 示例2 - 验证用户输入:
+  - ```cpp
+      // continue_input_test.cpp
+      #include<iostream>
+      #include<windows.h>
+      int main(){
+          SetConsoleOutputCP(CP_UTF8);
+          using namespace std;
+          int scores[5] = {85, -10, 92, 78, -5};
+          int sum = 0;
+          int count = 0;
+          
+          for(int i = 0; i < 5; i++){
+              if(scores[i] < 0){
+                  cout << "第" << i+1 << "个成绩无效，跳过" << endl;
+                  continue;  // 跳过负数成绩
+              }
+              sum += scores[i];
+              count++;
+              cout << "有效成绩: " << scores[i] << endl;
+          }
+          
+          if(count > 0){
+              cout << "平均成绩: " << (double)sum/count << endl;
+          }
+          return 0;
+      }
+    ```
+    - 运行结果:
+      - ```
+          有效成绩: 85
+          第2个成绩无效，跳过
+          有效成绩: 92
+          有效成绩: 78
+          第5个成绩无效，跳过
+          平均成绩: 85
+        ```
+- 示例3 - while循环中的continue:
+  - ```cpp
+      // continue_while_test.cpp
+      #include<iostream>
+      int main(){
+          using namespace std;
+          int n = 0;
+          int sum = 0;
+          
+          while(n < 10){
+              n++;
+              if(n % 2 == 0){
+                  continue;  // 跳过偶数
+              }
+              sum += n;
+              cout << "当前奇数: " << n << ", 累计和: " << sum << endl;
+          }
+          return 0;
+      }
+    ```
+    - 运行结果:
+      - ```
+          当前奇数: 1, 累计和: 1
+          当前奇数: 3, 累计和: 4
+          当前奇数: 5, 累计和: 9
+          当前奇数: 7, 累计和: 16
+          当前奇数: 9, 累计和: 25
+        ```
+- 注意事项:
+  - continue只能用于循环中，不能用于switch语句
+  - 在嵌套循环中，continue只影响当前层的循环
+  - 过度使用continue可能会降低代码可读性，需要适度使用
+  - 与break的区别：continue跳过当前迭代，break退出整个循环
+
+#### `break` 语句
+- `break` 语句用于立即退出当前循环,无论循环条件是否满足
+- 语法:
+  - ```cpp
+      break;
+    ```
+- 特点:
+  - 可以用于循环语句（for、while、do-while）和switch语句
+  - 立即终止当前循环，不再执行循环体中剩余的语句
+  - 程序继续执行循环后面的语句
+- 适用场景:
+  - 找到目标值后提前退出循环，提高效率
+  - 避免不必要的迭代，节省计算资源
+  - 实现循环的多出口控制
+  - 配合无限循环实现条件退出
+- 示例1 - 查找特定值:
+  - ```cpp
+      // break_test.cpp
+      #include<iostream>
+      int main(){
+          using namespace std;
+          for(int i=0;i<10;i++){
+              if(i==5){
+                  break;  // 找到目标值，立即退出循环
+              }
+              cout<<i<<endl;
+          }
+          cout << "循环结束，i的值为: " << 5 << endl;
+          return 0;
+      }
+    ```
+        - 运行结果:
+          - ```
+              0
+              1
+              2
+              3
+              4
+              循环结束，i的值为: 5
+            ```
+        - 程序说明:
+          - 程序会输出0到4之间的所有数,当i等于5时,使用 `break` 退出循环,不再执行后续语句
+          - break语句立即终止循环，提高了效率
+- 示例2 - 无限循环的条件退出:
+  - ```cpp
+      // break_infinite_loop.cpp
+      #include<iostream>
+      #include<windows.h>
+      int main(){
+          SetConsoleOutputCP(CP_UTF8);
+          using namespace std;
+          int n = 0;
+          int sum = 0;
+          
+          while(true){  // 无限循环
+              cout << "请输入一个数字(输入0结束):";
+              cin >> n;
+              
+              if(n == 0){
+                  break;  // 用户输入0，退出循环
+              }
+              
+              if(n < 0){
+                  cout << "请输入正数!" << endl;
+                  continue;  // 负数重新输入
+              }
+              
+              sum += n;
+              cout << "当前和为:" << sum << endl;
+          }
+          
+          cout << "最终和为:" << sum << endl;
+          return 0;
+      }
+    ```
+    - 程序说明:
+      - 使用无限循环接收用户输入
+      - 当用户输入0时使用break退出循环
+      - 当用户输入负数时使用continue跳过本次循环
+- 示例3 - 嵌套循环中的break:
+  - ```cpp
+      // break_nested_loop.cpp
+      #include<iostream>
+      int main(){
+          using namespace std;
+          
+          // 在二维数组中查找特定值
+          int matrix[3][4] = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}};
+          int target = 7;
+          bool found = false;
+          
+          for(int i = 0; i < 3; i++){
+              for(int j = 0; j < 4; j++){
+                  cout << "检查位置[" << i << "][" << j << "]: " << matrix[i][j] << endl;
+                  if(matrix[i][j] == target){
+                      cout << "找到目标值 " << target << " 在位置[" << i << "][" << j << "]" << endl;
+                      found = true;
+                      break;  // 只退出内层循环
+                  }
+              }
+              if(found){
+                  break;  // 退出外层循环
+              }
+          }
+          
+          if(!found){
+              cout << "未找到目标值" << target << endl;
+          }
+          return 0;
+      }
+    ```
+    - 运行结果:
+      - ```
+          检查位置[0][0]: 1
+          检查位置[0][1]: 2
+          检查位置[0][2]: 3
+          检查位置[0][3]: 4
+          检查位置[1][0]: 5
+          检查位置[1][1]: 6
+          检查位置[1][2]: 7
+          找到目标值 7 在位置[1][2]
+        ```
+- 注意事项:
+  - break只能跳出当前层的循环，在嵌套循环中需要配合标志变量或多次使用break
+  - 在switch语句中，break用于退出switch语句块
+  - 与continue的区别：break完全退出循环，continue只跳过当前迭代
+  - 合理使用break可以提高程序效率，但过度使用可能影响代码可读性
+
+### 循环控制语句对比总结
+
+#### 1. 循环类型对比
+
+| 循环类型 | 特点 | 适用场景 | 最小执行次数 |
+|---------|------|----------|-------------|
+| `for`循环 | 适合已知循环次数，结构紧凑 | 遍历数组、固定次数循环 | 0次 |
+| `while`循环 | 适合条件控制，先判断后执行 | 输入验证、状态检查 | 0次 |
+| `do-while`循环 | 至少执行一次，先执行后判断 | 菜单选择、输入确认 | 1次 |
+
+#### 2. 控制语句对比
+
+| 控制语句 | 作用 | 适用范围 | 影响范围 |
+|---------|------|----------|----------|
+| `continue` | 跳过当前迭代，继续下一次循环 | 所有循环语句 | 当前循环层 |
+| `break` | 完全退出循环 | 循环语句和switch语句 | 当前循环层 |
+
+#### 3. 最佳实践建议
+
+1. **循环选择原则**:
+   - 循环次数确定 → 使用`for`循环
+   - 循环次数不确定，可能0次 → 使用`while`循环
+   - 至少需要执行一次 → 使用`do-while`循环
+
+2. **控制语句使用原则**:
+   - 需要过滤某些数据 → 使用`continue`
+   - 找到目标提前退出 → 使用`break`
+   - 避免过度使用，保持代码可读性
+
+3. **性能考虑**:
+   - 在循环条件中避免复杂的函数调用
+   - 合理使用`break`避免不必要的迭代
+   - 考虑循环展开优化（在性能关键场景）
+
+4. **常见错误避免**:
+   - 确保循环条件最终会变为假（避免死循环）
+   - 在循环体内更新循环条件相关的变量
+   - 注意`do-while`后面的分号
+   - 在嵌套循环中正确使用控制语句的作用范围
